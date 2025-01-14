@@ -7,7 +7,7 @@ def hi_opt_ii_count(card):
         return 1
     elif card in [4, 5]:
         return 2
-    elif card == 10:  # 10 and Aces count as -2
+    elif card == 10:  # 10 count as -2
         return -2
     return 0
 
