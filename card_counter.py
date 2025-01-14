@@ -112,7 +112,7 @@ def reset_counts():
     card_history_label.config(text="Card History: ", fg="white")
 
 
-#Remove the most recent card from the history and adjust the count accordingly.
+# Remove the most recent card from the history and adjust the count accordingly.
 def delete_last_hand():
     global running_count, cards_dealt, aces_dealt, card_history
 
@@ -151,7 +151,9 @@ def delete_last_hand():
             )
             update_ace_label_color(aces_expected, aces_dealt)
 
-        card_history_label.config(text="Card History: " + ", ".join(map(str, card_history)))
+        card_history_label.config(
+            text="Card History: " + ", ".join(map(str, card_history))
+        )
 
 
 # Update the counting system based on selection
@@ -275,7 +277,6 @@ reset_button = tk.Button(
 )
 reset_button.pack(pady=20)
 
-#Delete Last Card Button
 # Delete Last Hand Button
 delete_button = tk.Button(
     window,
