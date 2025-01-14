@@ -112,6 +112,48 @@ def reset_counts():
     card_history_label.config(text="Card History: ", fg="white")
 
 
+#Remove the most recent card from the history and adjust the count accordingly.
+def delete_last_hand():
+    global running_count, cards_dealt, aces_dealt, card_history
+
+    if len(card_history) > 0:
+        last_card = card_history.pop()
+
+        # Update counts based on the last card
+        if counting_system == "Hi-Opt II":
+            running_count -= hi_opt_ii_count(last_card)
+        elif counting_system == "Hi-Lo":
+            running_count -= hi_lo_count(last_card)
+
+        if last_card == "A":
+            aces_dealt -= 1
+        cards_dealt -= 1
+
+        remaining_decks = max(0, deck_count - (cards_dealt / 52))
+        true_count = running_count / (remaining_decks if remaining_decks > 0 else 1)
+        deck_penetration = (cards_dealt / (deck_count * 52)) * 100
+        decks_dealt = deck_count - remaining_decks
+        aces_expected = decks_dealt * 4
+
+        # Update the labels
+        running_count_label.config(text=f"Running Count: {running_count}")
+        true_count_label.config(text=f"True Count: {true_count:.2f}")
+        update_true_count_color(true_count)
+        deck_penetration_label.config(
+            text=f"Deck Penetration: {deck_penetration:.2f}% | Cards Dealt: {cards_dealt} | Remaining Decks: {remaining_decks:.2f}"
+        )
+
+        if counting_system == "Hi-Lo":
+            ace_count_label.config(text="Aces are not counted separately in Hi-Lo")
+        else:
+            ace_count_label.config(
+                text=f"Aces Dealt: {aces_dealt} (Expected: {aces_expected:.2f})"
+            )
+            update_ace_label_color(aces_expected, aces_dealt)
+
+        card_history_label.config(text="Card History: " + ", ".join(map(str, card_history)))
+
+
 # Update the counting system based on selection
 def set_counting_system(new_system):
     global counting_system
@@ -232,6 +274,21 @@ reset_button = tk.Button(
     height=2,
 )
 reset_button.pack(pady=20)
+
+#Delete Last Card Button
+# Delete Last Hand Button
+delete_button = tk.Button(
+    window,
+    text="Delete Last Hand",
+    command=delete_last_hand,
+    font=("Arial", 16, "bold"),
+    bg="#333333",
+    fg="white",
+    width=15,
+    height=2,
+)
+delete_button.pack(pady=10)
+
 
 # Start the Tkinter event loop
 window.mainloop()
